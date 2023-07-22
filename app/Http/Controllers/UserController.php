@@ -25,7 +25,7 @@ class UserController extends Controller
 
         return count($filter) == 0
             ? UserResource::collection(User::paginate($per_page))
-            : UserResource::collection(User::where($filter)->paginate($per_page));
+            : UserResource::collection(User::where($filter)->paginate($per_page)->appends(request()->query()));
     }
 
 

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
-use Illuminate\Database\Eloquent\Casts\Json;
-use Illuminate\Support\Js;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +16,19 @@ use Illuminate\Support\Js;
 |
 */
 
-Route::get('/', function () {
-    return response()->json([
-        'message' => 'Welcome to the Location Review API.'
-    ]);
+Route::prefix('api')->group(function () {
+    Route::get('/', function () {
+        return response()->json([
+            'message' => 'Welcome to the Location Review API.'
+        ]);
+    });
+    Route::apiResource('locations', LocationController::class);
+    Route::apiResource('reviews', ReviewController::class);
+    Route::apiResource('users', UserController::class);
 });
 
-Route::apiResource('users', UserController::class);
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Requested resource not found.'
+    ], 404);
+});
