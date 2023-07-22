@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use Illuminate\Database\Eloquent\Casts\Json;
+use Illuminate\Support\Js;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +17,9 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'message' => 'Welcome to the Location Review API.'
+    ]);
 });
 
 Route::apiResource('users', UserController::class);

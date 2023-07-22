@@ -1,66 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Location Review API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This API allows you to submit and view location reviews.
 
-## About Laravel
+The API is available at `http://127.0.0.1:8000/`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Endpoints
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### List of users
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+GET `/users`
 
-## Learning Laravel
+Returns a list of users.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Optional query parameters:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- type: fiction or non-fiction
+- limit: a number between 1 and 20.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Get a single user
 
-## Laravel Sponsors
+GET `/users/:id`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Retrieve detailed information about a user.
 
-### Premium Partners
+### Submit an order
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+POST `/orders`
 
-## Contributing
+Allows you to submit a new order. Requires authentication.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The request body needs to be in JSON format and include the following properties:
 
-## Code of Conduct
+- `bookId` - Integer - Required
+- `customerName` - String - Required
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Example
 
-## Security Vulnerabilities
+```json
+POST /orders/
+Authorization: Bearer <YOUR TOKEN>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+{
+  "bookId": 1,
+  "customerName": "John"
+}
+```
 
-## License
+The response body will contain the order Id.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Get all orders
+
+GET `/orders`
+
+Allows you to view all orders. Requires authentication.
+
+### Get an order
+
+GET `/orders/:orderId`
+
+Allows you to view an existing order. Requires authentication.
+
+### Update an order
+
+PATCH `/orders/:orderId`
+
+Update an existing order. Requires authentication.
+
+The request body needs to be in JSON format and allows you to update the following properties:
+
+- `customerName` - String
+
+ Example
+
+```json
+PATCH /orders/PF6MflPDcuhWobZcgmJy5
+Authorization: Bearer <YOUR TOKEN>
+
+{
+  "customerName": "John"
+}
+```
+
+### Delete an order
+
+DELETE `/orders/:orderId`
+
+Delete an existing order. Requires authentication.
+
+The request body needs to be empty.
+
+ Example
+
+```json
+DELETE /orders/PF6MflPDcuhWobZcgmJy5
+Authorization: Bearer <YOUR TOKEN>
+```
+
+## API Authentication
+
+To submit or view an order, you need to register your API client.
+
+POST `/api-clients/`
+
+The request body needs to be in JSON format and include the following properties:
+
+- `clientName` - String
+- `clientEmail` - String
+
+ Example
+
+ ```json
+{
+    "clientName": "Postman",
+    "clientEmail": "valentin@example.com"
+}
+ ```
+
+The response body will contain the access token. The access token is valid for 7 days.
