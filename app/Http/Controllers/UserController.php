@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Utilities\QueryFilter;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return UserResource::collection(
@@ -28,18 +26,11 @@ class UserController extends Controller
         );
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        return new UserResource(User::create($request->all()));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user)
     {
         return new UserResource($user->loadMissing('reviews'));
@@ -48,7 +39,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         //
     }

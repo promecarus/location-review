@@ -9,6 +9,11 @@ class Location extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'latitude',
+        'longitude',
+    ];
+
     public function reviews()
     {
         return $this->hasMany(Review::class);

@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
@@ -18,12 +15,10 @@ return new class extends Migration
             $table->integer('rating')->unsigned()->min(1)->max(5);
             $table->string('message')->nullable();
             $table->timestamps();
+            $table->unique(['location_id', 'user_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('reviews');

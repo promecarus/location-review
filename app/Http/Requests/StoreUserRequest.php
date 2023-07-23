@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLocationRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,8 +14,9 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'latitude' => 'required|numeric|min:-90|max:90',
-            'longitude' => 'required|numeric|min:-180|max:180'
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8'
         ];
     }
 }
