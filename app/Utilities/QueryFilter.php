@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QueryFilter
 {
-    public static function buildQuery(array $columnMap, $request)
+    public static function buildQuery(array $params, $request)
     {
         $operatorMap = [
             'eq' => '=',
@@ -16,34 +16,33 @@ class QueryFilter
             'lt' => '<',
             'lte' => '<=',
             'like' => 'like',
-            'notLike' => 'not like',
+            'not_like' => 'not like',
             'in' => 'in',
-            'notIn' => 'not in',
+            'not_in' => 'not in',
             'between' => 'between',
-            'notBetween' => 'not between',
-            'isNull' => 'is null',
-            'isNotNull' => 'is not null'
+            'not_between' => 'not between',
+            'is_null' => 'is null',
+            'is_not_null' => 'is not null'
         ];
         $result = [];
 
-        foreach ($columnMap as $param => $column) {
+        foreach ($params as $param) {
             $query = $request->query($param);
 
             if (!$query) continue;
 
             foreach ($operatorMap as $operator => $sqlOperator) {
-                if (isset($query[$operator])) {
-                    if (in_array($operator, ['like', 'notLike'])) {
-                        $result[] = [$column, $sqlOperator, '%' . $query[$operator] . '%'];
-                    } elseif (in_array($operator, ['in', 'notIn'])) {
-                        $values = explode(',', $query[$operator]);
-                        $result[] = [$column, $sqlOperator, $values];
-                    } elseif (in_array($operator, ['between', 'notBetween'])) {
-                        $values = explode(',', $query[$operator]);
-                        $result[] = [$column, $sqlOperator, [$values[0], $values[1]]];
-                    } else {
-                        $result[] = [$column, $sqlOperator, $query[$operator]];
+                if ($request->has("$param.$operator")) {
+                    $value = $request->input("$param.$operator");
+                    if (in_array($operator, ['like', 'not_like'])) {
+                        $value = "%$value%";
+                    } elseif (in_array($operator, ['in', 'not_in'])) {
+                        $value = explode(',', $value);
+                    } elseif (in_array($operator, ['between', 'not_between'])) {
+                        $value = explode(',', $value);
+                        $value = [$value[0], $value[1]];
                     }
+                    $result[] = [$param, $sqlOperator, $value];
                 }
             }
         }

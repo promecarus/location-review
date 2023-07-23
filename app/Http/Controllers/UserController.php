@@ -12,20 +12,20 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filter = QueryFilter::buildQuery([
-            'id' => 'id',
-            'name' => 'name',
-            'email' => 'email',
-            'createdAt' => 'created_at',
-            'updatedAt' => 'updated_at'
-        ], $request);
-        $per_page = request()->per_page ?? 10;
-
-        return count($filter) == 0
-            ? UserResource::collection(User::paginate($per_page))
-            : UserResource::collection(User::where($filter)->paginate($per_page)->appends(request()->query()));
+        return UserResource::collection(
+            User::where(QueryFilter::buildQuery([
+                'id',
+                'name',
+                'email',
+                'created_at',
+                'updated_at'
+            ], request()))
+                ->when(request('with_reviews') == 'true', fn ($query) => $query->with('reviews'))
+                ->paginate(request('per_page'))
+                ->appends(request()->query())
+        );
     }
 
 
@@ -42,7 +42,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return new UserResource($user);
+        return new UserResource($user->loadMissing('reviews'));
     }
 
     /**

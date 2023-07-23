@@ -16,12 +16,14 @@ class ReviewResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'locationId' => $this->location_id,
-            'userId' => $this->user_id,
+            'location_id' => $this->location_id,
+            'user_id' => $this->user_id,
             'rating' => $this->rating,
             'message' => $this->message,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'location' => new LocationResource($this->whenLoaded('location')),
+            'user' => new UserResource($this->whenLoaded('user'))
         ];
     }
 }

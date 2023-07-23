@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(30)
-            ->hasReviews(25)
+        User::factory(20)
+            ->hasReviews(5)
             ->create();
 
         Location::factory(20)
-            ->hasReviews(40)
+            ->hasReviews(10)
             ->create();
     }
 }

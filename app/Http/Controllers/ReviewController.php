@@ -7,29 +7,29 @@ use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Utilities\QueryFilter;
-use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filter = QueryFilter::buildQuery([
-            'id' => 'id',
-            'locationId' => 'location_id',
-            'userId' => 'user_id',
-            'rating' => 'rating',
-            'message' => 'message',
-            'createdAt' => 'created_at',
-            'updatedAt' => 'updated_at'
-        ], $request);
-        $per_page = request()->per_page ?? 10;
-
-        return count($filter) == 0
-            ? ReviewResource::collection(Review::paginate($per_page))
-            : ReviewResource::collection(Review::where($filter)->paginate($per_page)->appends(request()->query()));
+        return ReviewResource::collection(
+            Review::where(QueryFilter::buildQuery([
+                'id',
+                'location_id',
+                'user_id',
+                'rating',
+                'message',
+                'created_at',
+                'updated_at'
+            ], request()))
+                ->when(request('with_location') == 'true', fn ($query) => $query->with('location'))
+                ->when(request('with_user') == 'true', fn ($query) => $query->with('user'))
+                ->paginate(request('per_page'))
+                ->appends(request()->query())
+        );
     }
 
     /**
@@ -53,7 +53,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        return new ReviewResource($review);
+        return new ReviewResource($review->loadMissing('location', 'user'));
     }
 
     /**

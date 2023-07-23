@@ -7,27 +7,26 @@ use App\Http\Requests\UpdateLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use App\Utilities\QueryFilter;
-use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filter = QueryFilter::buildQuery([
-            'id' => 'id',
-            'latitude' => 'latitude',
-            'longitude' => 'longitude',
-            'createdAt' => 'created_at',
-            'updatedAt' => 'updated_at'
-        ], $request);
-        $per_page = request()->per_page ?? 10;
-
-        return count($filter) == 0
-            ? LocationResource::collection(Location::paginate($per_page))
-            : LocationResource::collection(Location::where($filter)->paginate($per_page)->appends(request()->query()));
+        return LocationResource::collection(
+            Location::where(QueryFilter::buildQuery([
+                'id',
+                'latitude',
+                'longitude',
+                'created_at',
+                'updated_at'
+            ], request()))
+                ->when(request('with_reviews') == 'true', fn ($query) => $query->with('reviews'))
+                ->paginate(request('per_page'))
+                ->appends(request()->query())
+        );
     }
 
     /**
@@ -51,7 +50,7 @@ class LocationController extends Controller
      */
     public function show(Location $location)
     {
-        return new LocationResource($location);
+        return new LocationResource($location->loadMissing('reviews'));
     }
 
     /**

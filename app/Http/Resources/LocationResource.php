@@ -18,8 +18,9 @@ class LocationResource extends JsonResource
             'id' => $this->id,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
         ];
     }
 }
