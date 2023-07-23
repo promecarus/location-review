@@ -44,11 +44,8 @@ class ReviewController extends Controller
         $review->update($request->all());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Review $review)
     {
-        //
+        $review->delete();
     }
 }

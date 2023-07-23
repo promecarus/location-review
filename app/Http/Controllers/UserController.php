@@ -41,11 +41,8 @@ class UserController extends Controller
         $user->update($request->all());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
     }
 }

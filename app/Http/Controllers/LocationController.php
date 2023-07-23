@@ -41,11 +41,8 @@ class LocationController extends Controller
         $location->update($request->all());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Location $location)
     {
-        //
+        $location->delete();
     }
 }
