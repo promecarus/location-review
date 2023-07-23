@@ -36,12 +36,9 @@ class UserController extends Controller
         return new UserResource($user->loadMissing('reviews'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $user->update($request->all());
     }
 
     /**

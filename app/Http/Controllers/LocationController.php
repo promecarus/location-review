@@ -36,12 +36,9 @@ class LocationController extends Controller
         return new LocationResource($location->loadMissing('reviews'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateLocationRequest $request, Location $location)
     {
-        //
+        $location->update($request->all());
     }
 
     /**

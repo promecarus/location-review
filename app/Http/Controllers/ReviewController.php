@@ -39,12 +39,9 @@ class ReviewController extends Controller
         return new ReviewResource($review->loadMissing('location', 'user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateReviewRequest $request, Review $review)
     {
-        //
+        $review->update($request->all());
     }
 
     /**
